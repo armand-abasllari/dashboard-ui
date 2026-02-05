@@ -14,7 +14,7 @@ export default async function Home() {
 
   return (
     <main className="container">
-      <h1 className="section-title">My Dashboard test</h1>
+      <h1 className="section-title">My Dashboard </h1>
       <p className="section-subtitle">
         Live stats powered by Trakt + Steam (more coming).
       </p>
