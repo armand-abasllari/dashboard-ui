@@ -1,7 +1,7 @@
 // src/lib/trakt.ts
-export type TraktRatedMovie = {
-  rated_at: string;
-  rating: number; // 1..10
+export type TraktWatchedMovie = {
+  plays: number;
+  last_watched_at: string;
   movie: {
     title: string;
     year: number;
@@ -26,7 +26,6 @@ async function traktGet<T>(path: string): Promise<T> {
       "trakt-api-version": "2",
       "trakt-api-key": clientId,
     },
-    // Build-time fetch should be cached for static export.
     cache: "force-cache",
   });
 
@@ -38,25 +37,19 @@ async function traktGet<T>(path: string): Promise<T> {
   return (await res.json()) as T;
 }
 
-export async function getTopRatedMovies(limit = 5): Promise<TraktRatedMovie[]> {
+// ✅ Most recently watched movies (public-friendly)
+export async function getRecentlyWatchedMovies(limit = 5): Promise<TraktWatchedMovie[]> {
   const user = requireEnv("TRAKT_USERNAME");
 
-  // Public user ratings endpoint (works when profile is public).
-  // Sort by "highest" so we get your top rated first.
-  const data = await traktGet<TraktRatedMovie[]>(
-    `/users/${encodeURIComponent(user)}/ratings/movies?sort=highest`
+  // returns array with movie + plays + last_watched_at
+  const data = await traktGet<TraktWatchedMovie[]>(
+    `/users/${encodeURIComponent(user)}/watched/movies?extended=full`
+  );
+
+  // Sort newest first, then take top N
+  data.sort(
+    (a, b) => new Date(b.last_watched_at).getTime() - new Date(a.last_watched_at).getTime()
   );
 
   return data.slice(0, limit);
-}
-
-export function summarizeRatings(items: TraktRatedMovie[]) {
-  const count = items.length;
-  const avg =
-    count === 0 ? 0 : items.reduce((s, x) => s + x.rating, 0) / count;
-
-  return {
-    count,
-    avg: Number(avg.toFixed(2)),
-  };
 }

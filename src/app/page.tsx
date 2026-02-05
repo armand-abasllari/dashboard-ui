@@ -1,14 +1,13 @@
-import { getTopRatedMovies, summarizeRatings } from "@/lib/trakt";
-import type { TraktRatedMovie } from "@/lib/trakt";
+import { getRecentlyWatchedMovies } from "@/lib/trakt";
+import type { TraktWatchedMovie } from "@/lib/trakt";
+
 
 export default async function Home() {
-let topRated: TraktRatedMovie[] = [];
-  let stats = { count: 0, avg: 0 };
+  let recent: TraktWatchedMovie[] = [];
   let traktError: string | null = null;
 
   try {
-    topRated = await getTopRatedMovies(5);
-    stats = summarizeRatings(topRated);
+    recent = await getRecentlyWatchedMovies(5);
   } catch (e: any) {
     traktError = e?.message ?? "Trakt fetch failed";
   }
@@ -26,59 +25,54 @@ let topRated: TraktRatedMovie[] = [];
 
           {traktError ? (
             <p className="section-subtitle">Trakt error: {traktError}</p>
-          ) : (
+          ) : recent.length > 0 ? (
             <>
-              <p>
-                Top rated movies (showing {stats.count}) — Avg: {stats.avg}/10
-              </p>
-
-              {topRated.length > 0 ? (
-                <ul style={{ margin: "8px 0 0", paddingLeft: "18px" }}>
-                  {topRated.map((x: any) => (
-                    <li key={x.movie.ids.trakt}>
-                      {x.movie.title}{" "}
-                      <span className="section-subtitle">({x.movie.year})</span>{" "}
-                      — <strong>{x.rating}/10</strong>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="section-subtitle">No ratings found yet.</p>
-              )}
+              <p>Recently watched (last {recent.length})</p>
+              <ul style={{ margin: "8px 0 0", paddingLeft: "18px" }}>
+                {recent.map((x) => (
+                  <li key={x.movie.ids.trakt}>
+                    {x.movie.title}{" "}
+                    <span className="section-subtitle">({x.movie.year})</span>
+                  </li>
+                ))}
+              </ul>
             </>
+          ) : (
+            <p className="section-subtitle">No watched history found yet.</p>
           )}
 
-          <div className="tags">
-            <span className="tag">Movies</span>
-            <span className="tag">Ratings</span>
-            <span className="tag">History</span>
-          </div>
-        </div>
 
-        <div className="card">
-          <h3>🎮 Steam</h3>
-          <p>Coming next: top played + completion stats.</p>
-          <div className="tags">
-            <span className="tag">Top hours</span>
-            <span className="tag">Achievements</span>
-            <span className="tag">Completion</span>
-          </div>
-        </div>
-
-        <div className="card">
-          <h3>⚙️ Status</h3>
-          <p>
-            Frontend: Cloudflare Pages ✅ <br />
-            APIs: not connected yet <br />
-            Next: create /api endpoints
-          </p>
-          <div className="tags">
-            <span className="tag">Cloudflare</span>
-            <span className="tag">Next.js</span>
-            <span className="tag">APIs</span>
-          </div>
+        <div className="tags">
+          <span className="tag">Movies</span>
+          <span className="tag">Ratings</span>
+          <span className="tag">History</span>
         </div>
       </div>
-    </main>
+
+      <div className="card">
+        <h3>🎮 Steam</h3>
+        <p>Coming next: top played + completion stats.</p>
+        <div className="tags">
+          <span className="tag">Top hours</span>
+          <span className="tag">Achievements</span>
+          <span className="tag">Completion</span>
+        </div>
+      </div>
+
+      <div className="card">
+        <h3>⚙️ Status</h3>
+        <p>
+          Frontend: Cloudflare Pages ✅ <br />
+          APIs: not connected yet <br />
+          Next: create /api endpoints
+        </p>
+        <div className="tags">
+          <span className="tag">Cloudflare</span>
+          <span className="tag">Next.js</span>
+          <span className="tag">APIs</span>
+        </div>
+      </div>
+    </div>
+    </main >
   );
 }
