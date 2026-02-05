@@ -1,5 +1,5 @@
-// app/page.tsx
-import SteamCard from "@/components/SteamCard";
+// src/app/page.tsx
+import DashboardCard from "@/components/DashboardCard";
 import { getSteamSummary } from "@/lib/steam";
 
 export const dynamic = "force-static";
@@ -7,35 +7,33 @@ export const dynamic = "force-static";
 export default async function Page() {
   const steam = await getSteamSummary();
 
+  const steamText = steam.error
+    ? steam.error
+    : `Total hours: ${steam.totalHours} hrs • Games owned: ${steam.totalGames}
+
+Top played:
+${steam.topGames.map((g) => `• ${g.name} — ${g.hours} hrs`).join("\n")}`;
+
   return (
     <main>
-      {/* Keep whatever header/hero you already have above this if needed */}
+      <section
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+          gap: 20,
+        }}
+      >
+        <DashboardCard
+          title="Trakt"
+          description="Trakt integration is temporarily paused (history/ratings endpoint inconsistency). Steam is live."
+        />
 
-      <section className="grid">
-        {/* Trakt (paused) */}
-        <div className="card">
-          <div className="card-top">
-            <h3 className="card-title">Trakt</h3>
-            <span className="tag">Paused</span>
-          </div>
-          <p className="muted" style={{ marginTop: 10 }}>
-            Trakt integration is temporarily paused (history/ratings endpoint inconsistency). Steam is live.
-          </p>
-        </div>
+        <DashboardCard title="Steam" description={steamText} />
 
-        {/* Steam (real data) */}
-        <SteamCard data={steam} />
-
-        {/* Status (placeholder, keep your existing content if you want) */}
-        <div className="card">
-          <div className="card-top">
-            <h3 className="card-title">Status</h3>
-            <span className="tag">Soon</span>
-          </div>
-          <p className="muted" style={{ marginTop: 10 }}>
-            Add uptime checks / service status here when you feel like suffering again.
-          </p>
-        </div>
+        <DashboardCard
+          title="Status"
+          description="Add uptime checks / service status here when you feel like suffering again."
+        />
       </section>
     </main>
   );
