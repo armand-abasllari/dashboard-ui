@@ -33,8 +33,66 @@ export default async function Page() {
           description="Trakt integration is temporarily paused (history/ratings endpoint inconsistency). Steam is live."
         />
 
-        {/* Steam (real) */}
+        {/* Steam (real + profile header) */}
         <DashboardCard title="Steam">
+          {steam.profile ? (
+            <a
+              href={steam.profile.profileUrl}
+              target="_blank"
+              rel="noreferrer"
+              style={{
+                display: "flex",
+                gap: 12,
+                alignItems: "center",
+                textDecoration: "none",
+                marginBottom: 12,
+              }}
+            >
+              <div
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 12,
+                  overflow: "hidden",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  background: "rgba(255,255,255,0.04)",
+                  flexShrink: 0,
+                }}
+              >
+                {steam.profile.avatarFull ? (
+                  <img
+                    src={steam.profile.avatarFull}
+                    alt=""
+                    loading="lazy"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      display: "block",
+                    }}
+                  />
+                ) : null}
+              </div>
+
+              <div style={{ minWidth: 0 }}>
+                <div
+                  style={{
+                    color: "#e5e7eb",
+                    fontWeight: 700,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {steam.profile.personaName}
+                </div>
+                <div style={{ color: "#9ca3af", fontSize: 12 }}>
+                  View Steam profile →
+                </div>
+              </div>
+            </a>
+          ) : null}
+
           {steam.error ? (
             <p style={{ margin: 0, color: "#9ca3af" }}>{steam.error}</p>
           ) : (

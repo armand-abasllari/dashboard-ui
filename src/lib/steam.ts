@@ -1,4 +1,4 @@
-// lib/steam.ts
+// src/lib/steam.ts
 export type SteamTopGame = {
   appid: number;
   name: string;
@@ -7,7 +7,14 @@ export type SteamTopGame = {
   headerImg: string;
 };
 
+export type SteamProfile = {
+  personaName: string;
+  profileUrl: string;
+  avatarFull: string;
+};
+
 export type SteamSummary = {
+  profile?: SteamProfile;
   totalHours: number;
   totalGames: number;
   topGames: SteamTopGame[];
@@ -18,6 +25,29 @@ export type SteamSummary = {
 function toHours(minutes?: number): number {
   if (!minutes || minutes <= 0) return 0;
   return Math.round((minutes / 60) * 10) / 10; // 1 decimal
+}
+
+async function fetchSteamProfile(key: string, steamid: string): Promise<SteamProfile | undefined> {
+  const url =
+    "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?" +
+    new URLSearchParams({
+      key,
+      steamids: steamid,
+      format: "json",
+    }).toString();
+
+  const res = await fetch(url, { cache: "force-cache" });
+  if (!res.ok) return undefined;
+
+  const data = (await res.json()) as any;
+  const p = data?.response?.players?.[0];
+  if (!p) return undefined;
+
+  return {
+    personaName: String(p.personaname ?? "Steam User"),
+    profileUrl: String(p.profileurl ?? `https://steamcommunity.com/profiles/${steamid}/`),
+    avatarFull: String(p.avatarfull ?? ""),
+  };
 }
 
 export async function getSteamSummary(): Promise<SteamSummary> {
@@ -40,36 +70,35 @@ export async function getSteamSummary(): Promise<SteamSummary> {
     };
   }
 
-  // GetOwnedGames (IPlayerService) supports include_appinfo=1 to return game names, etc. :contentReference[oaicite:1]{index=1}
-  const url =
-    "https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?" +
-    new URLSearchParams({
-      key,
-      steamid,
-      include_appinfo: "1",
-      include_played_free_games: "1",
-      format: "json",
-    }).toString();
-
   try {
-    const res = await fetch(url, {
-      // Build-time fetch only; this cache hint is harmless for static export
-      cache: "force-cache",
-    });
+    // Profile header info (name/avatar/link)
+    const profile = await fetchSteamProfile(key, steamid);
+
+    // Owned games list
+    const gamesUrl =
+      "https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?" +
+      new URLSearchParams({
+        key,
+        steamid,
+        include_appinfo: "1",
+        include_played_free_games: "1",
+        format: "json",
+      }).toString();
+
+    const res = await fetch(gamesUrl, { cache: "force-cache" });
 
     if (!res.ok) {
-      return { ...base, error: `Steam API error: HTTP ${res.status}` };
+      return { ...base, profile, error: `Steam API error: HTTP ${res.status}` };
     }
 
     const data = (await res.json()) as any;
     const games: any[] = data?.response?.games ?? [];
 
     if (!Array.isArray(games) || games.length === 0) {
-      // Common cause: profile/game details privacy not public, or no owned games returned.
       return {
         ...base,
-        error:
-          "Steam returned no games. Check Steam privacy: Game details must be Public.",
+        profile,
+        error: "Steam returned no games. Check Steam privacy: Game details must be Public.",
       };
     }
 
@@ -97,6 +126,7 @@ export async function getSteamSummary(): Promise<SteamSummary> {
     });
 
     return {
+      profile,
       totalHours: toHours(totalMinutes),
       totalGames: games.length,
       topGames,
