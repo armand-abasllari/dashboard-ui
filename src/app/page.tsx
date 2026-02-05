@@ -1,9 +1,10 @@
 import { getRecentlyWatchedMovies } from "@/lib/trakt";
-import type { TraktWatchedMovie } from "@/lib/trakt";
+import type { TraktHistoryMovie } from "@/lib/trakt";
+
 
 
 export default async function Home() {
-  let recent: TraktWatchedMovie[] = [];
+  let recent: TraktHistoryMovie[] = [];
   let traktError: string | null = null;
 
   try {
@@ -30,7 +31,7 @@ export default async function Home() {
               <p>Recently watched (last {recent.length})</p>
               <ul style={{ margin: "8px 0 0", paddingLeft: "18px" }}>
                 {recent.map((x) => (
-                  <li key={x.movie.ids.trakt}>
+                  <li key={x.id}>
                     {x.movie.title}{" "}
                     <span className="section-subtitle">({x.movie.year})</span>
                   </li>
@@ -42,37 +43,38 @@ export default async function Home() {
           )}
 
 
-        <div className="tags">
-          <span className="tag">Movies</span>
-          <span className="tag">Ratings</span>
-          <span className="tag">History</span>
-        </div>
-      </div>
 
-      <div className="card">
-        <h3>🎮 Steam</h3>
-        <p>Coming next: top played + completion stats.</p>
-        <div className="tags">
-          <span className="tag">Top hours</span>
-          <span className="tag">Achievements</span>
-          <span className="tag">Completion</span>
+          <div className="tags">
+            <span className="tag">Movies</span>
+            <span className="tag">Ratings</span>
+            <span className="tag">History</span>
+          </div>
         </div>
-      </div>
 
-      <div className="card">
-        <h3>⚙️ Status</h3>
-        <p>
-          Frontend: Cloudflare Pages ✅ <br />
-          APIs: not connected yet <br />
-          Next: create /api endpoints
-        </p>
-        <div className="tags">
-          <span className="tag">Cloudflare</span>
-          <span className="tag">Next.js</span>
-          <span className="tag">APIs</span>
+        <div className="card">
+          <h3>🎮 Steam</h3>
+          <p>Coming next: top played + completion stats.</p>
+          <div className="tags">
+            <span className="tag">Top hours</span>
+            <span className="tag">Achievements</span>
+            <span className="tag">Completion</span>
+          </div>
+        </div>
+
+        <div className="card">
+          <h3>⚙️ Status</h3>
+          <p>
+            Frontend: Cloudflare Pages ✅ <br />
+            APIs: not connected yet <br />
+            Next: create /api endpoints
+          </p>
+          <div className="tags">
+            <span className="tag">Cloudflare</span>
+            <span className="tag">Next.js</span>
+            <span className="tag">APIs</span>
+          </div>
         </div>
       </div>
-    </div>
     </main >
   );
 }
