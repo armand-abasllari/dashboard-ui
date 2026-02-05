@@ -1,80 +1,42 @@
-import { getRecentlyWatchedMovies } from "@/lib/trakt";
-import type { TraktHistoryMovie } from "@/lib/trakt";
+// app/page.tsx
+import SteamCard from "@/components/SteamCard";
+import { getSteamSummary } from "@/lib/steam";
 
+export const dynamic = "force-static";
 
-
-export default async function Home() {
-  let recent: TraktHistoryMovie[] = [];
-  let traktError: string | null = null;
-
-  try {
-    recent = await getRecentlyWatchedMovies(5);
-  } catch (e: any) {
-    traktError = e?.message ?? "Trakt fetch failed";
-  }
+export default async function Page() {
+  const steam = await getSteamSummary();
 
   return (
-    <main className="container">
-      <h1 className="section-title">My Dashboard </h1>
-      <p className="section-subtitle">
-        Live stats powered by Trakt + Steam (more coming).
-      </p>
+    <main>
+      {/* Keep whatever header/hero you already have above this if needed */}
 
-      <div className="grid dashboard-grid">
+      <section className="grid">
+        {/* Trakt (paused) */}
         <div className="card">
-          <h3>🎬 Trakt</h3>
-
-          {traktError ? (
-            <p className="section-subtitle">Trakt error: {traktError}</p>
-          ) : recent.length > 0 ? (
-            <>
-              <p>Recently watched (last {recent.length})</p>
-              <ul style={{ margin: "8px 0 0", paddingLeft: "18px" }}>
-                {recent.map((x) => (
-                  <li key={x.id}>
-                    {x.movie.title}{" "}
-                    <span className="section-subtitle">({x.movie.year})</span>
-                  </li>
-                ))}
-              </ul>
-            </>
-          ) : (
-            <p className="section-subtitle">No watched history found yet.</p>
-          )}
-
-
-
-          <div className="tags">
-            <span className="tag">Movies</span>
-            <span className="tag">Ratings</span>
-            <span className="tag">History</span>
+          <div className="card-top">
+            <h3 className="card-title">Trakt</h3>
+            <span className="tag">Paused</span>
           </div>
-        </div>
-
-        <div className="card">
-          <h3>🎮 Steam</h3>
-          <p>Coming next: top played + completion stats.</p>
-          <div className="tags">
-            <span className="tag">Top hours</span>
-            <span className="tag">Achievements</span>
-            <span className="tag">Completion</span>
-          </div>
-        </div>
-
-        <div className="card">
-          <h3>⚙️ Status</h3>
-          <p>
-            Frontend: Cloudflare Pages ✅ <br />
-            APIs: not connected yet <br />
-            Next: create /api endpoints
+          <p className="muted" style={{ marginTop: 10 }}>
+            Trakt integration is temporarily paused (history/ratings endpoint inconsistency). Steam is live.
           </p>
-          <div className="tags">
-            <span className="tag">Cloudflare</span>
-            <span className="tag">Next.js</span>
-            <span className="tag">APIs</span>
-          </div>
         </div>
-      </div>
-    </main >
+
+        {/* Steam (real data) */}
+        <SteamCard data={steam} />
+
+        {/* Status (placeholder, keep your existing content if you want) */}
+        <div className="card">
+          <div className="card-top">
+            <h3 className="card-title">Status</h3>
+            <span className="tag">Soon</span>
+          </div>
+          <p className="muted" style={{ marginTop: 10 }}>
+            Add uptime checks / service status here when you feel like suffering again.
+          </p>
+        </div>
+      </section>
+    </main>
   );
 }
