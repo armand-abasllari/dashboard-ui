@@ -1,12 +1,23 @@
-/* ====== Website-like theme ====== */
+/* ====== Copied from abasllari.com style.css ====== */
+
+/* =========================================================
+   VARIABLES
+   ========================================================= */
 :root {
   --bg-main: radial-gradient(circle at top left, #132235, #050914 70%);
   --card-bg: rgba(255, 255, 255, 0.05);
   --border-soft: rgba(255, 255, 255, 0.08);
   --text-main: #e5e7eb;
   --text-muted: #9ca3af;
+  --accent: #38bdf8;
+  --accent-soft: rgba(56, 189, 248, 0.18);
+  --shadow-soft: 0 12px 32px rgba(0, 0, 0, 0.4);
+  --radius: 16px;
 }
 
+/* =========================================================
+   GLOBAL
+   ========================================================= */
 * {
   box-sizing: border-box;
 }
@@ -18,77 +29,95 @@ body {
 
 body {
   margin: 0;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
-    "Apple Color Emoji", "Segoe UI Emoji";
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans,
+    "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
   background: var(--bg-main);
   color: var(--text-main);
 }
 
-/* ====== Layout ====== */
+/* =========================================================
+   LAYOUT
+   ========================================================= */
 .container {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 56px 20px;
+  padding: 48px 20px;
 }
 
-.h1 {
-  font-size: 44px;
-  margin: 0 0 6px;
-  letter-spacing: -0.5px;
+.section-title {
+  font-size: 40px;
+  font-weight: 800;
+  margin: 0;
 }
 
-.sub {
+.section-subtitle {
+  margin: 10px 0 28px;
   color: var(--text-muted);
-  margin: 0 0 26px;
+  line-height: 1.6;
 }
 
-/* ====== Cards ====== */
+/* =========================================================
+   GRID + CARD (website style)
+   ========================================================= */
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
-}
-
-@media (max-width: 900px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 .card {
   background: var(--card-bg);
   border: 1px solid var(--border-soft);
-  border-radius: 16px;
-  padding: 18px 18px 16px;
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: var(--shadow-soft);
   backdrop-filter: blur(10px);
 }
 
-.card-title {
+.card h3 {
+  margin: 0 0 6px;
+  font-size: 18px;
+}
+
+.card p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.tags {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 700;
-  margin: 0 0 10px;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
 }
 
-.card-text {
-  color: var(--text-muted);
-  margin: 0;
-}
-
-.list {
-  margin: 0;
-  padding-left: 18px;
-  color: var(--text-muted);
-}
-
-.badge {
-  display: inline-block;
-  padding: 2px 8px;
+.tag {
+  font-size: 12px;
+  padding: 6px 10px;
   border-radius: 999px;
   border: 1px solid var(--border-soft);
   background: rgba(255, 255, 255, 0.04);
   color: var(--text-main);
-  font-size: 12px;
-  margin-left: 8px;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   DASHBOARD-SPECIFIC (same style, just 3 columns)
+   ========================================================= */
+.dashboard-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 1100px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .grid,
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
 }

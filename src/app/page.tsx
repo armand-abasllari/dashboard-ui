@@ -1,37 +1,44 @@
 export default function Home() {
   return (
     <main className="container">
-      <h1 className="h1">My Dashboard</h1>
-      <p className="sub">Live stats powered by Trakt + Steam (more coming).</p>
+      <h1 className="section-title">My Dashboard</h1>
+      <p className="section-subtitle">Live stats powered by Trakt + Steam (more coming).</p>
 
-      <section className="grid">
+      <div className="grid dashboard-grid">
         <div className="card">
-          <h2 className="card-title">
-            <span aria-hidden>🎬</span> Trakt
-          </h2>
-          <p className="card-text">Coming next: recently watched + ratings.</p>
+          <h3>🎬 Trakt</h3>
+          <p>Coming next: recently watched + ratings.</p>
+          <div className="tags">
+            <span className="tag">Movies</span>
+            <span className="tag">Ratings</span>
+            <span className="tag">History</span>
+          </div>
         </div>
 
         <div className="card">
-          <h2 className="card-title">
-            <span aria-hidden>🎮</span> Steam
-          </h2>
-          <p className="card-text">Coming next: top played + completion stats.</p>
+          <h3>🎮 Steam</h3>
+          <p>Coming next: top played + completion stats.</p>
+          <div className="tags">
+            <span className="tag">Top hours</span>
+            <span className="tag">Achievements</span>
+            <span className="tag">Completion</span>
+          </div>
         </div>
 
         <div className="card">
-          <h2 className="card-title">
-            <span aria-hidden>⚙️</span> Status{" "}
-            <span className="badge">Cloudflare Pages ✅</span>
-          </h2>
-
-          <ul className="list">
-            <li>Frontend: Cloudflare Pages ✅</li>
-            <li>APIs: not connected yet</li>
-            <li>Next: create /api endpoints</li>
-          </ul>
+          <h3>⚙️ Status</h3>
+          <p>
+            Frontend: Cloudflare Pages ✅ <br />
+            APIs: not connected yet <br />
+            Next: create /api endpoints
+          </p>
+          <div className="tags">
+            <span className="tag">Cloudflare</span>
+            <span className="tag">Next.js</span>
+            <span className="tag">APIs</span>
+          </div>
         </div>
-      </section>
+      </div>
     </main>
   );
 }
