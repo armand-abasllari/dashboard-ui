@@ -8,12 +8,23 @@ export default async function Page() {
   const steam = await getSteamSummary();
 
   return (
-    <main>
+    <main
+      style={{
+        minHeight: "calc(100vh - 80px)", // adjust if your header height differs
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "32px 18px",
+      }}
+    >
       <section
         style={{
+          width: "100%",
+          maxWidth: 1200,
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
           gap: 20,
+          alignItems: "start",
         }}
       >
         {/* Trakt (paused) */}
@@ -31,7 +42,7 @@ export default async function Page() {
               <div
                 style={{
                   display: "flex",
-                  gap: 12,
+                  gap: 10,
                   flexWrap: "wrap",
                   color: "#9ca3af",
                   fontSize: 14,
@@ -53,24 +64,71 @@ export default async function Page() {
                   Top played
                 </div>
 
-                <ul style={{ margin: 0, paddingLeft: 18 }}>
+                <div style={{ display: "grid", gap: 10 }}>
                   {steam.topGames.map((g) => (
-                    <li key={g.appid} style={{ marginBottom: 6 }}>
-                      <a
-                        href={g.storeUrl}
-                        target="_blank"
-                        rel="noreferrer"
+                    <a
+                      key={g.appid}
+                      href={g.storeUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "56px 1fr auto",
+                        gap: 10,
+                        alignItems: "center",
+                        textDecoration: "none",
+                        padding: 10,
+                        borderRadius: 12,
+                        border: "1px solid rgba(255,255,255,0.08)",
+                        background: "rgba(255,255,255,0.03)",
+                      }}
+                    >
+                      <div
                         style={{
-                          color: "#e5e7eb",
-                          textDecoration: "none",
+                          width: 56,
+                          height: 28,
+                          borderRadius: 8,
+                          overflow: "hidden",
+                          border: "1px solid rgba(255,255,255,0.08)",
+                          background: "rgba(255,255,255,0.04)",
                         }}
                       >
-                        {g.name}
-                      </a>{" "}
-                      <span style={{ color: "#9ca3af" }}>— {g.hours} hrs</span>
-                    </li>
+                        <img
+                          src={g.headerImg}
+                          alt=""
+                          loading="lazy"
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            display: "block",
+                          }}
+                        />
+                      </div>
+
+                      <div style={{ minWidth: 0 }}>
+                        <div
+                          style={{
+                            color: "#e5e7eb",
+                            fontWeight: 600,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {g.name}
+                        </div>
+                        <div style={{ color: "#9ca3af", fontSize: 12 }}>
+                          AppID: {g.appid}
+                        </div>
+                      </div>
+
+                      <div style={{ color: "#e5e7eb", fontWeight: 700 }}>
+                        {g.hours} <span style={{ color: "#9ca3af" }}>hrs</span>
+                      </div>
+                    </a>
                   ))}
-                </ul>
+                </div>
 
                 <div style={{ marginTop: 10, color: "#9ca3af", fontSize: 12 }}>
                   Updated at build time
