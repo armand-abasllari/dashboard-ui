@@ -1,7 +1,8 @@
 import { getTopRatedMovies, summarizeRatings } from "@/lib/trakt";
+import type { TraktRatedMovie } from "@/lib/trakt";
 
 export default async function Home() {
-  let topRated = [];
+let topRated: TraktRatedMovie[] = [];
   let stats = { count: 0, avg: 0 };
   let traktError: string | null = null;
 
